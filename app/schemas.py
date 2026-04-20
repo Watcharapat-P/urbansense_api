@@ -85,3 +85,32 @@ class MrtRidershipRead(MrtRidershipBase):
 
     class Config:
         from_attributes = True
+
+
+# ── Crowd Density Estimator ──────────────────────────────────────────────────
+
+class CrowdDensityEstimateRequest(BaseModel):
+    temperature_c: float
+    humidity_pct: float
+    avg_db: float
+    station_id: Optional[str] = None
+    is_rush_hour: Optional[bool] = None
+
+
+class DistributionReference(BaseModel):
+    min: float
+    p25: float
+    p50: float
+    p75: float
+    p90: float
+    max: float
+
+
+class CrowdDensityEstimateResponse(BaseModel):
+    estimated_density_pct: float
+    estimated_level: str
+    confidence_pct: float
+    baseline_scope: str
+    sample_size: int
+    factors: list[str]
+    historical_reference: dict[str, DistributionReference]

@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app import models, schemas
+from app.estimator import estimate_crowd_density
 
 router = APIRouter()
 
@@ -140,3 +141,24 @@ def get_mrt_ridership(
     if date_to:
         q = q.filter(model.date <= date_to)
     return q.order_by(model.date.desc()).offset(offset).limit(limit).all()
+
+
+# ── Crowd Density Estimator ──────────────────────────────────────────────────
+
+@router.post(
+    "/estimate/crowd-density",
+    response_model=schemas.CrowdDensityEstimateResponse,
+    tags=["Estimator"],
+)
+def estimate_density(
+    payload: schemas.CrowdDensityEstimateRequest,
+    db: Session = Depends(get_db),
+):
+    return estimate_crowd_density(
+        db,
+        temperature=payload.temperature_c,
+        humidity=payload.humidity_pct,
+        avg_db=payload.avg_db,
+        station_id=payload.station_id,
+        is_rush_hour=payload.is_rush_hour,
+    )

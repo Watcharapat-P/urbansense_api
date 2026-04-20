@@ -2,6 +2,8 @@
 
 FastAPI + SQLite backend for BTS station sensor data, daily weather, and MRT ridership.
 
+This repository now also includes a heuristic crowd-density estimator based on the historical sound, temperature, and humidity distributions already stored in the project database.
+
 ## Setup
 
 ```bash
@@ -39,6 +41,7 @@ All endpoints are read-only (GET only).
 | GET | `/api/v1/temp-humid/{id}` | Single temp/humidity record |
 | GET | `/api/v1/weather/{station}` | Daily weather — station: `siam` or `ladprow`, filter by `date_from`, `date_to` |
 | GET | `/api/v1/mrt/{line}` | MRT ridership — line: `pink`, `blue`, `yellow`, `purple`, filter by `date_from`, `date_to` |
+| POST | `/api/v1/estimate/crowd-density` | Rough crowd-density estimate from `temperature_c`, `humidity_pct`, and `avg_db` |
 
 ### Example requests
 
@@ -48,6 +51,19 @@ GET /api/v1/temp-humid?station_id=BTS-LADPRAO&rush_hour_only=true
 GET /api/v1/weather/ladprow?date_from=2024-01-01&date_to=2024-03-31
 GET /api/v1/mrt/pink?date_from=2024-01-01&date_to=2024-01-31
 ```
+
+```json
+POST /api/v1/estimate/crowd-density
+{
+	"temperature_c": 35.2,
+	"humidity_pct": 66.0,
+	"avg_db": 78.4,
+	"station_id": "BTS-SIAM",
+	"is_rush_hour": true
+}
+```
+
+The estimator is intentionally rough. It is not a trained ML model because the repository does not contain labeled crowd-density ground truth. Instead, it scores the input against the historical sensor distributions in `urbansense.db`, gives more weight to sound, and returns a density percentage, a coarse level (`low`, `moderate`, `high`, `very_high`), confidence, and the historical reference values used.
 
 All routes support `limit` (max 1000, default 100) and `offset` for pagination.
 
