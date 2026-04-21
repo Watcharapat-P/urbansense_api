@@ -1,9 +1,36 @@
 # UrbanSense API
 
-FastAPI + SQLite backend for BTS station sensor data, daily weather, and MRT ridership.
+## Project Title
+UrbanSense: Crowd Density Estimation Using Environmental Sensors
 
-This repository now also includes a heuristic crowd-density estimator based on the historical sound, temperature, and humidity distributions already stored in the project database.
+---
 
+## Team Members
+- Watcharapat 6710545881
+- Khittitaj 6710545466
+- Kasetsart University  
+- Software and Knowledge Engineering (SKE)
+
+---
+
+## Project Overview
+
+UrbanSense is a data acquisition (DAQ) project that estimates crowd density in public transit environments using environmental data instead of direct passenger counting.
+
+The system collects **temperature, humidity, and sound data** using an ESP32 (KidBright) sensor setup, combined with mobile-based sound measurements. This data is integrated with **secondary datasets** such as historical weather and MRT ridership statistics.
+
+A backend API built with FastAPI provides access to all collected and processed data, along with a heuristic-based crowd density estimation.
+
+### Key Features
+- Real-time sensor data collection (ESP32 + DHT22)
+- Sound level data collection via mobile app (Decibel X)
+- Data integration from multiple sources (sensor, weather, MRT)
+- REST API for data access and analysis
+- Crowd density estimation (Low / Moderate / High / Very High)
+- SQLite database with structured schema
+- Data visualization-ready endpoints
+
+---
 ## Setup
 
 ```bash
@@ -30,8 +57,6 @@ python -m uvicorn app.main:app --reload
 Visit **http://localhost:8000/docs** for the interactive Swagger UI.
 
 ## Endpoints
-
-All endpoints are read-only (GET only).
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -73,19 +98,33 @@ All routes support `limit` (max 1000, default 100) and `offset` for pagination.
 urbansense_api/
 ├── app/
 │   ├── __init__.py
-│   ├── main.py         # FastAPI app + table creation on startup
-│   ├── database.py     # SQLite engine & session
-│   ├── models.py       # SQLAlchemy ORM models
-│   ├── schemas.py      # Pydantic request/response schemas
-│   └── routers.py      # All route handlers
+│   ├── main.py
+│   ├── database.py
+│   ├── models.py
+│   ├── schemas.py
+│   └── routers.py
 ├── data/
 │   └── table/
 │       ├── urbansense_s.sql
 │       ├── urbansense_t_h.sql
 │       ├── weather_stations.sql
 │       └── mrt_ridership.sql
-├── seed_db.py          # One-time data loader from SQL dumps
+├── LICENSE
+├── README.md
 ├── requirements.txt
-├── .gitignore
-└── README.md
+├── seed_db.py
+├── database_schema.png
+├── Urbansense-DAQ.pdf
+├── 6710545466.jpg
+├── 6710545881.jpg
+├── urbansense_flows.json
+└── .gitignore
 ```
+
+- app — source code for FastAPI backend
+- table — SQL dump files for seeding the database
+- README.md — project description and usage
+- LICENSE — licensing agreement
+- Urbansense-DAQ.pdf — presentation slides
+- database_schema.png — integration database schema diagram
+- 6710545466.jpg and 6710545881.jpg — team photos
