@@ -1,0 +1,120 @@
+[
+    {
+        "id": "3bdef94d74842caa",
+        "type": "tab",
+        "label": "Flow 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "de7fe66986214088",
+        "type": "mqtt in",
+        "z": "3bdef94d74842caa",
+        "name": "",
+        "topic": "b6710545881/urbansense/data",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "3f05255667299909",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 230,
+        "y": 280,
+        "wires": [
+            [
+                "382414843a891e62",
+                "8241d2c34a1faec5"
+            ]
+        ]
+    },
+    {
+        "id": "382414843a891e62",
+        "type": "debug",
+        "z": "3bdef94d74842caa",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "8241d2c34a1faec5",
+        "type": "template",
+        "z": "3bdef94d74842caa",
+        "name": "",
+        "field": "topic",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "INSERT INTO urbansense_t_h\n(ts, station_id, temp, humid, is_rush_hour)\nVALUES (\n    '{{payload.timestamp}}',\n    '{{payload.station_id}}',\n    {{payload.temperature_c}},\n    {{payload.humidity_pct}},\n    {{#payload.is_rush_hour}}1{{/payload.is_rush_hour}}{{^payload.is_rush_hour}}0{{/payload.is_rush_hour}}\n);",
+        "output": "str",
+        "x": 480,
+        "y": 360,
+        "wires": [
+            [
+                "bb6ce2e2c070a0e8"
+            ]
+        ]
+    },
+    {
+        "id": "bb6ce2e2c070a0e8",
+        "type": "mysql",
+        "z": "3bdef94d74842caa",
+        "mydb": "e8f9bed7cb3d7106",
+        "name": "urbansense",
+        "x": 690,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3f05255667299909",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "iot.cpe.ku.ac.th",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "e8f9bed7cb3d7106",
+        "type": "MySQLdatabase",
+        "name": "urbansense_t_h",
+        "host": "iot.cpe.ku.ac.th",
+        "port": "3306",
+        "db": "b6710545881",
+        "tz": "",
+        "charset": "UTF8"
+    }
+]
